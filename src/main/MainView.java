@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
 import java.awt.Color;
+import javax.swing.JTextArea;
+import javax.swing.JScrollBar;
 
 public class MainView {
 
@@ -104,7 +106,11 @@ public class MainView {
         JTextPane textPane = new JTextPane();
         textPane.setBackground(Color.BLACK);
         textPane.setForeground(Color.WHITE);
-        textPane.setBounds(0, 22, 444, 315);
+        textPane.setBounds(0, 22, 427, 315);
         frame.getContentPane().add(textPane);
+        
+        JScrollBar scrollBar = new JScrollBar();
+        scrollBar.setBounds(427, 22, 17, 315);
+        frame.getContentPane().add(scrollBar);
     }
 }

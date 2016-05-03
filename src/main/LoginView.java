@@ -70,9 +70,11 @@ public class LoginView {
         JButton btnConfirm = new JButton("Confirm");
         btnConfirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                String username = text_usn.getText();
-                String pwd = new String(text_pwd.getPassword());
+                username= text_usn.getText();
+                passwd = new String(text_pwd.getPassword());
+                Network.updateConfig(username, passwd);
                 frame.setVisible(false);
+                
 
             }
         });

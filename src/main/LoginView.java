@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.awt.event.ActionEvent;
 
 public class LoginView {
@@ -46,7 +47,7 @@ public class LoginView {
         frame = new JFrame();
         frame.setResizable(false);
         frame.setBounds(100, 100, 252, 199);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         
         text_usn = new JTextField();
@@ -70,9 +71,9 @@ public class LoginView {
         JButton btnConfirm = new JButton("Confirm");
         btnConfirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                username= text_usn.getText();
-                passwd = new String(text_pwd.getPassword());
-                Network.updateConfig(username, passwd);
+                String username= text_usn.getText();
+                String passwd = new String(text_pwd.getPassword());
+                Config.updateConfig(username, passwd);
                 frame.setVisible(false);
                 
 
@@ -80,5 +81,10 @@ public class LoginView {
         });
         btnConfirm.setBounds(80, 101, 93, 23);
         frame.getContentPane().add(btnConfirm);
+        
+        HashMap<String, String> config = Config.readConfig();
+        text_usn.setText(config.get("username"));
+        text_pwd.setText(config.get("password"));
+       
     }
 }

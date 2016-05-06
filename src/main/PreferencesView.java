@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
@@ -23,7 +24,7 @@ public class PreferencesView {
 	private JTextField textirc;
 	private JTextField textirl;
 	private JTextField textics;
-	private JTextField textmtlr;
+	private JTextField textmtrl;
 	private JTextField textURL;
 
 	/**
@@ -63,10 +64,17 @@ public class PreferencesView {
 		btnConfirm = new JButton("Confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Config.updateConfig(textURL.getText(), textirc.getText(), textirl.getText(), textics.getText(),
-						textmtlr.getText());
-				frmPreferences.setVisible(false);
-
+				String url = textURL.getText();
+				String irc = textirc.getText();
+				String irl = textirl.getText();
+				String ics = textics.getText();
+				String mtrl = textmtrl.getText();
+				if (Config.validate(url, irc, irl, ics, mtrl)) {
+					Config.updateConfig(url, irc, irl, ics, mtrl);
+					frmPreferences.setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(null, "Invalid parameters.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		btnConfirm.setBounds(298, 219, 93, 23);
@@ -79,7 +87,7 @@ public class PreferencesView {
 				textirc.setText("20");
 				textirl.setText("10");
 				textics.setText("300");
-				textmtlr.setText("5");
+				textmtrl.setText("5");
 			}
 		});
 		btnResetToDefault.setBounds(160, 219, 128, 23);
@@ -129,10 +137,10 @@ public class PreferencesView {
 		label_3.setBounds(106, 161, 138, 15);
 		frmPreferences.getContentPane().add(label_3);
 
-		textmtlr = new JTextField();
-		textmtlr.setColumns(10);
-		textmtlr.setBounds(249, 158, 66, 21);
-		frmPreferences.getContentPane().add(textmtlr);
+		textmtrl = new JTextField();
+		textmtrl.setColumns(10);
+		textmtrl.setBounds(249, 158, 66, 21);
+		frmPreferences.getContentPane().add(textmtrl);
 
 		textURL = new JTextField();
 		textURL.setBounds(95, 25, 339, 21);
@@ -160,7 +168,7 @@ public class PreferencesView {
 		textirc.setText(config.get("interval_retry_connection"));
 		textirl.setText(config.get("interval_retry_login"));
 		textics.setText(config.get("interval_check_status"));
-		textmtlr.setText(config.get("max_times_retry_login"));
+		textmtrl.setText(config.get("max_times_retry_login"));
 		textURL.setText(config.get("testUrl"));
 	}
 }

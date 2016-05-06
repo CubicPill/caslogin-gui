@@ -7,7 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONObject;
 
 public class Config {
@@ -136,5 +137,21 @@ public class Config {
 		} catch (Exception e) {
 
 		}
+	}
+
+	public static boolean validate(String url, String irc, String irl, String ics, String mtrl) {
+		Pattern pattern;
+		String regexurl = "^(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([/\\w \\.-]*)*/?$";
+
+		pattern = Pattern.compile(regexurl);
+
+		boolean urlv = pattern.matcher(url).matches();
+		pattern = Pattern.compile("[0-9]*");
+		boolean ircv = pattern.matcher(irc).matches();
+		boolean irlv = pattern.matcher(irl).matches();
+		boolean icsv = pattern.matcher(ics).matches();
+		boolean mtrlv = pattern.matcher(mtrl).matches();
+
+		return (urlv && ircv && irlv && icsv && mtrlv);
 	}
 }

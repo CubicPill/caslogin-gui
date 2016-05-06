@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
 
 public class PreferencesView {

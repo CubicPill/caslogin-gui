@@ -98,12 +98,12 @@ public class OPS {
 								} else {
 									MainView.print("Login FAILED.");
 									MainView.print("Attempts used up. The program must quit in 20 seconds.");
-try {
-	Thread.sleep(20*1000);
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
+									try {
+										Thread.sleep(20 * 1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 									System.exit(0);
 								}
 							}
@@ -128,8 +128,6 @@ try {
 		this.opsStart();
 
 	}
-
-	
 
 	public boolean mtrl() {
 		time_retry_login--;

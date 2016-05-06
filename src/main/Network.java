@@ -4,23 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.cache.CachingHttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -54,10 +47,7 @@ public class Network {
 		String username = config.get("username");
 		String passwd = config.get("password");
 		String url = config.get("testUrl");
-		int irc = Integer.parseInt(config.get("interval_retry_connection"));
-		int irl = Integer.parseInt(config.get("interval_retry_login"));
-		int ics = Integer.parseInt(config.get("interval_check_status"));
-		int mtlr = Integer.parseInt(config.get("max_times_retry_login"));
+
 		// read params from config here
 
 		String wlanacip = "";
@@ -69,10 +59,8 @@ public class Network {
 		String JSESSIONID_SUSTC = "";
 
 		// setting the proxy for the traffic to be captured by fiddler
-		HttpHost proxy = new HttpHost("127.0.0.1", 8888);
 
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		httpclient = CachingHttpClients.custom().setProxy(proxy).build();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
@@ -143,9 +131,9 @@ public class Network {
 
 		post.setEntity(new UrlEncodedFormEntity(params));
 		response = httpclient.execute(post);
-		
+
 		MainView.print("Login information posted to the CAS server.");
-		
+
 		if (response.getStatusLine().getStatusCode() == 302) {
 			String locationURL = response.getLastHeader("Location").getValue();
 			httpget = new HttpGet(locationURL);

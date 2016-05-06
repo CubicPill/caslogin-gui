@@ -18,26 +18,24 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class Network {
+	enum status {
+		ONLINE, OFFLINE, FAILED
+	}
 
 	public static boolean ifLoggedIn(String testUrl) throws Exception {
 		int status_code = 0;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(testUrl);
-
+		CloseableHttpResponse test = null;
 		try {
-			CloseableHttpResponse test = httpclient.execute(httpGet);
-			try {
-				status_code = test.getStatusLine().getStatusCode();
-
-			} finally {
-				test.close();
-			}
+			test = httpclient.execute(httpGet);
+			status_code = test.getStatusLine().getStatusCode();
 		} finally {
+			test.close();
 			httpGet.abort();
 			httpclient.close();
-
 		}
-		if (status_code == 204)
+		if (status_code == 204) // the web page will generate a HTTP 204 code
 			return true;
 		return false;
 	}
@@ -48,11 +46,10 @@ public class Network {
 		String passwd = config.get("password");
 		String url = config.get("testUrl");
 
-		// read params from config here
+		// read params from config
 
 		String wlanacip = "";
 		String wlanuserip = "";
-
 		String lt = "";
 		String execution = "";
 		String _eventId = "";
@@ -65,44 +62,50 @@ public class Network {
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		String content = EntityUtils.toString(entity);
-
-		int start = content.indexOf("wlanuserip") + 13;
-		int end = content.indexOf("&locale=");
-		if (start != 12)
+		int start = 0;
+		int end = 0;
+		try {
+			start = content.indexOf("wlanuserip") + 13;
+			end = content.indexOf("&locale=");
 			wlanuserip = content.substring(start, end);
-		start = content.indexOf("wlanacip") + 11;
-		end = content.indexOf("%26wlanuserip");
-		if (start != 10)
+			// get param wlanuserip
+
+			start = content.indexOf("wlanacip") + 11;
+			end = content.indexOf("%26wlanuserip");
 			wlanacip = content.substring(start, end);
+			// get param walnacip
 
-		start = content.indexOf("name=\"lt\"") + 17;
-		end = start + 50;
-		lt = content.substring(start, end);
-		end = lt.indexOf("\" />");
-		lt = lt.substring(0, end);
-		// get param lt
+			start = content.indexOf("name=\"lt\"") + 17;
+			end = start + 50;
+			lt = content.substring(start, end);
+			end = lt.indexOf("\" />");
+			lt = lt.substring(0, end);
+			// get param lt
 
-		start = content.indexOf("name=\"execution\"") + 24;
-		end = start + 10;
-		execution = content.substring(start, end);
-		end = execution.indexOf("\" />");
-		execution = execution.substring(0, end);
-		// get param execution
+			start = content.indexOf("name=\"execution\"") + 24;
+			end = start + 10;
+			execution = content.substring(start, end);
+			end = execution.indexOf("\" />");
+			execution = execution.substring(0, end);
+			// get param execution
 
-		start = content.indexOf("name=\"_eventId\"") + 23;
-		end = start + 10;
-		_eventId = content.substring(start, end);
-		end = _eventId.indexOf("\" />");
-		_eventId = _eventId.substring(0, end);
-		// get param _eventId
+			start = content.indexOf("name=\"_eventId\"") + 23;
+			end = start + 10;
+			_eventId = content.substring(start, end);
+			end = _eventId.indexOf("\" />");
+			_eventId = _eventId.substring(0, end);
+			// get param _eventId
 
-		JSESSIONID_SUSTC = response.getFirstHeader("Set-Cookie").getValue();
-		end = JSESSIONID_SUSTC.indexOf("; Path=/cas/;");
-		JSESSIONID_SUSTC = JSESSIONID_SUSTC.substring(11, end);
+			JSESSIONID_SUSTC = response.getFirstHeader("Set-Cookie").getValue();
+			end = JSESSIONID_SUSTC.indexOf("; Path=/cas/;");
+			JSESSIONID_SUSTC = JSESSIONID_SUSTC.substring(11, end);
+			// get param JSESSIONID
+		} catch (Exception e) {
+			MainView.print("Error getting login information.");
+			return;
+		}
 
-		// get param lt, execution, _eventid, JSESSIONID_SUSTC here
 		MainView.print("Login information acquired.");
-
 		url = "http://weblogin.sustc.edu.cn/cas/login;jsessionid=" + JSESSIONID_SUSTC
 				+ "?service=http://enet.10000.gd.cn%3A10001%2Fsz%2Fsz112%2Findex.jsp%3Fwlanacip%3D" + wlanacip
 				+ "%26wlanuserip%3D" + wlanuserip;
@@ -138,6 +141,44 @@ public class Network {
 			String locationURL = response.getLastHeader("Location").getValue();
 			httpget = new HttpGet(locationURL);
 			response = httpclient.execute(httpget);
+		}
+	}
+
+	public static status checkNetworkStatus() {
+		HashMap<String, String> config = Config.loadConfig();
+		String testUrl = config.get("testUrl");
+		boolean status = false;
+		int ar = 3;
+		while (true) {
+			ar--;
+			try {
+				status = ifLoggedIn(testUrl);
+				break;
+			} catch (Exception e1) {
+				if (ar <= 0) {
+					MainView.print("Connection FAILED.");
+					return Network.status.FAILED;
+				}
+				MainView.print("Connection FAILED. Retry in " + config.get("interval_retry_connection") + " sec.");
+
+				try {
+
+					Thread.sleep(1000 * Integer.parseInt(config.get("interval_retry_connection")));
+				} catch (Exception e2) {
+					// do nothing
+				}
+
+			}
+		}
+
+		if (status) {
+			MainView.print("Online.");
+			return Network.status.ONLINE;
+
+		} else {
+			MainView.print("You are offline.");
+			return Network.status.OFFLINE;
+
 		}
 	}
 

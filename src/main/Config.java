@@ -85,7 +85,6 @@ public class Config {
 			// get usn&pwd from LoginView
 		}
 		HashMap<String, String> config = readConfig();
-		MainView.print("Configurations successfully imported.");
 		return config;
 
 	}

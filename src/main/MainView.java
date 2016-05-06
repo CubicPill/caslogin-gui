@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.awt.Font;
 
 public class MainView {
 
-	private JFrame frame;
+	private static JFrame frmCasAutoLogin;
 	public static JTextArea textArea;
 
 	/**
@@ -29,7 +30,7 @@ public class MainView {
 			public void run() {
 				try {
 					MainView window = new MainView();
-					window.frame.setVisible(true);
+					window.frmCasAutoLogin.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,15 +49,16 @@ public class MainView {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setBounds(100, 100, 614, 363);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmCasAutoLogin = new JFrame();
+		frmCasAutoLogin.setTitle("CAS auto login: Not running");
+		frmCasAutoLogin.setResizable(false);
+		frmCasAutoLogin.setBounds(100, 100, 614, 363);
+		frmCasAutoLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmCasAutoLogin.getContentPane().setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 22, 608, 315);
-		frame.getContentPane().add(scrollPane);
+		frmCasAutoLogin.getContentPane().add(scrollPane);
 
 		textArea = new JTextArea();
 		textArea.setEnabled(false);
@@ -65,13 +67,14 @@ public class MainView {
 		textArea.setTabSize(4);
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		textArea.setForeground(Color.WHITE);
 		textArea.setBackground(Color.BLACK);
 		OPS ops = new OPS();
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 608, 21);
-		frame.getContentPane().add(menuBar);
+		frmCasAutoLogin.getContentPane().add(menuBar);
 
 		JMenu mnOPS = new JMenu("OPS");
 		menuBar.add(mnOPS);
@@ -125,9 +128,23 @@ public class MainView {
 		menuBar.add(mnHelp);
 
 		JMenuItem mntmHelp = new JMenuItem("Help");
+		mntmHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Nothing here :P", "Help", JOptionPane.INFORMATION_MESSAGE);
+
+			}
+		});
 		mnHelp.add(mntmHelp);
 
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				JOptionPane.showMessageDialog(null, "https://github.com/NorrisHua/caslogin-gui/", "About",
+						JOptionPane.INFORMATION_MESSAGE);
+
+			}
+		});
 		mnHelp.add(mntmAbout);
 
 	}
@@ -136,11 +153,22 @@ public class MainView {
 		r = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss.SSS] ").format(new Date()) + r;
 		textArea.append(r);
 		textArea.append("\n");
+		textArea.setCaretPosition(textArea.getText().length()); // auto scroll
+																// to the bottom
 	}
 
-	public static void printerr(String r) {
+	public static void printerr(String r) { // Unfinished. Print error message
+											// in red color.
 		r = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss.SSS] ").format(new Date()) + r;
 		textArea.append(r);
 		textArea.append("\n");
+	}
+
+	public static void setTitle(boolean running) {
+		if (running) {
+			frmCasAutoLogin.setTitle("CAS auto login: Running");
+		} else {
+			frmCasAutoLogin.setTitle("CAS auto login: Not running");
+		}
 	}
 }

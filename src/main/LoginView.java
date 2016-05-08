@@ -73,8 +73,8 @@ public class LoginView {
 			public void actionPerformed(ActionEvent arg0) {
 				String username = text_usn.getText();
 				String passwd = new String(text_pwd.getPassword());
-				Config.updateConfig(username, passwd);
-				frame.setVisible(false);
+				if (Config.updateConfig(username, passwd))
+					frame.setVisible(false);
 
 			}
 		});

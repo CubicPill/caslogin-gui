@@ -26,11 +26,12 @@ public class MainView {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainView window = new MainView();
-					window.frmCasAutoLogin.setVisible(true);
+					new MainView();
+					frmCasAutoLogin.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -139,10 +140,9 @@ public class MainView {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				JOptionPane.showMessageDialog(null, "https://github.com/NorrisHua/caslogin-gui/", "About",
+				JOptionPane.showMessageDialog(null,
+						"Source code availible here\nhttps://github.com/NorrisHua/caslogin-gui/", "About",
 						JOptionPane.INFORMATION_MESSAGE);
-
 			}
 		});
 		mnHelp.add(mntmAbout);

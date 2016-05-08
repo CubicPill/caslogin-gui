@@ -67,8 +67,10 @@ public class PreferencesView {
 				String ics = textics.getText();
 				String mtrl = textmtrl.getText();
 				if (Config.validate(url, irc, irl, ics, mtrl)) {
-					Config.updateConfig(url, irc, irl, ics, mtrl);
-					frmPreferences.setVisible(false);
+					// validate the parameters
+					if (Config.updateConfig(url, irc, irl, ics, mtrl))
+						frmPreferences.setVisible(false);
+					// action done, hide the window
 				} else {
 					JOptionPane.showMessageDialog(null, "Invalid parameters.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -81,8 +83,8 @@ public class PreferencesView {
 		btnResetToDefault.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textURL.setText("http://www.v2ex.com/generate_204");
-				textirc.setText("20");
-				textirl.setText("10");
+				textirc.setText("30");
+				textirl.setText("30");
 				textics.setText("300");
 				textmtrl.setText("5");
 			}

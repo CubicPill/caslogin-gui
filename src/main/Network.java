@@ -18,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class Network {
+
 	enum status {
 		ONLINE, OFFLINE, FAILED
 	}
@@ -27,6 +28,7 @@ public class Network {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(testUrl);
 		CloseableHttpResponse test = null;
+
 		try {
 			test = httpclient.execute(httpGet);
 			status_code = test.getStatusLine().getStatusCode();
@@ -35,6 +37,7 @@ public class Network {
 			httpGet.abort();
 			httpclient.close();
 		}
+
 		if (status_code == 204) // the web page will generate a HTTP 204 code
 			return true;
 		return false;
@@ -54,16 +57,15 @@ public class Network {
 		String execution = "";
 		String _eventId = "";
 		String JSESSIONID_SUSTC = "";
-
-		// setting the proxy for the traffic to be captured by fiddler
+		int start = 0;
+		int end = 0;
 
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		String content = EntityUtils.toString(entity);
-		int start = 0;
-		int end = 0;
+
 		try {
 			start = content.indexOf("wlanuserip") + 13;
 			end = content.indexOf("&locale=");
@@ -100,6 +102,7 @@ public class Network {
 			end = JSESSIONID_SUSTC.indexOf("; Path=/cas/;");
 			JSESSIONID_SUSTC = JSESSIONID_SUSTC.substring(11, end);
 			// get param JSESSIONID
+
 		} catch (Exception e) {
 			MainView.print("Error getting login information.");
 			return;
@@ -132,6 +135,8 @@ public class Network {
 		params.add(new BasicNameValuePair("_eventId", _eventId));
 		params.add(new BasicNameValuePair("submit", "LOGIN"));
 
+		// add login information
+
 		post.setEntity(new UrlEncodedFormEntity(params));
 		response = httpclient.execute(post);
 
@@ -141,45 +146,42 @@ public class Network {
 			String locationURL = response.getLastHeader("Location").getValue();
 			httpget = new HttpGet(locationURL);
 			response = httpclient.execute(httpget);
-		}
+		} // handle HTTP 302 redirection
 	}
 
 	public static status checkNetworkStatus() {
 		HashMap<String, String> config = Config.loadConfig();
 		String testUrl = config.get("testUrl");
 		boolean status = false;
-		int ar = 3;
+		int ar = 3; // maximum time allowed to retry connection
 		while (true) {
 			ar--;
 			try {
 				status = ifLoggedIn(testUrl);
 				break;
 			} catch (Exception e1) {
+				// connection failure. E.g. timed out, no Internet connection
 				if (ar <= 0) {
 					MainView.print("Connection FAILED.");
 					return Network.status.FAILED;
-				}
+				} // connection failed.
+
 				MainView.print("Connection FAILED. Retry in " + config.get("interval_retry_connection") + " sec.");
 
 				try {
-
 					Thread.sleep(1000 * Integer.parseInt(config.get("interval_retry_connection")));
 				} catch (Exception e2) {
 					// do nothing
 				}
-
 			}
 		}
 
 		if (status) {
 			MainView.print("Online.");
 			return Network.status.ONLINE;
-
 		} else {
 			MainView.print("You are offline.");
 			return Network.status.OFFLINE;
-
 		}
 	}
-
 }

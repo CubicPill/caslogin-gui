@@ -147,7 +147,7 @@ public class MainView extends JFrame {
         mntmAbout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 JOptionPane.showMessageDialog(null,
-                        "Source code availible here\nhttps://github.com/NorrisHua/caslogin-gui/", "About",
+                        "Source code availible here\nhttps://github.com/CubicPill/caslogin-gui/", "About",
                         JOptionPane.INFORMATION_MESSAGE);
             }
         });

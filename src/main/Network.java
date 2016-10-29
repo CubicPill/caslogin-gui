@@ -109,15 +109,15 @@ public class Network {
 		}
 
 		MainView.print("Login information acquired.");
-		url = "http://weblogin.sustc.edu.cn/cas/login;jsessionid=" + JSESSIONID_SUSTC
+		url = "http://cas.sustc.edu.cn/cas/login;jsessionid=" + JSESSIONID_SUSTC
 				+ "?service=http://enet.10000.gd.cn%3A10001%2Fsz%2Fsz112%2Findex.jsp%3Fwlanacip%3D" + wlanacip
 				+ "%26wlanuserip%3D" + wlanuserip;
 
 		HttpPost post = new HttpPost(url);
-		post.setHeader("Host", "weblogin.sustc.edu.cn");
+		post.setHeader("Host", "cas.sustc.edu.cn");
 		post.setHeader("Cache-Control", "max-age=0");
 		post.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-		post.setHeader("Origin", "http://weblogin.sustc.edu.cn");
+		post.setHeader("Origin", "http://cas.sustc.edu.cn");
 		post.setHeader("Upgrade-Insecure-Requests", "1");
 		post.setHeader("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36");
